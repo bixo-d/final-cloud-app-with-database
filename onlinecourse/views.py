@@ -143,7 +143,11 @@ def extract_answers(request):
         # Get the selected choice ids from the submission record
         # For each selected choice, check if it is a correct answer or not
         # Calculate the total score
-#def show_exam_result(request, course_id, submission_id):
-
-
-
+def show_exam_result(request, course_id, submission_id):
+    course = Course.objects.get(course_id=course_id)
+    submission = Submission.objects.get(submission_id)
+    choises = []#submission #Here i should get a dictionary or something of [choise_id, value]
+    for choise in choises:
+        choices #Here i should compare if the answer selected is correct or not
+        # if is correct I shoud add to the score
+        # generate a render with the answers and the scores.

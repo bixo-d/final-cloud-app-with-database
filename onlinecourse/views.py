@@ -120,10 +120,9 @@ def submit(request, course_id):
     Submission.objects.create(enrollment=enrollment)
     submission = Submission.objects.get(enrollment=enrollment)
     answers = extract_answers(request)
-    for answer in answers:
-        submission.objects.add(choices=answer)
+    submission.objects.set(answers)
         
-    return HttpResponseRedirect(viewname='onlinecourse:show_exam_result', args=(course.id,submission.id,))
+    return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result', args=(course.id,submission.id,)))
 
 
 # <HINT> A example method to collect the selected choices from the exam form from the request object
@@ -144,10 +143,19 @@ def extract_answers(request):
         # For each selected choice, check if it is a correct answer or not
         # Calculate the total score
 def show_exam_result(request, course_id, submission_id):
-    course = Course.objects.get(course_id=course_id)
-    submission = Submission.objects.get(submission_id)
-    choises = []#submission #Here i should get a dictionary or something of [choise_id, value]
-    for choise in choises:
-        choices #Here i should compare if the answer selected is correct or not
-        # if is correct I shoud add to the score
-        # generate a render with the answers and the scores.
+    course = get_object_or_404(Course, pk=course_id)
+    submission = get_object_or_404(Submission, pk=submission_id)
+    choices = submission.objects.all()
+    
+    grade = 0.0
+    for choice in choices.choice_set():
+        if choice.is_correct:
+            grade = choice.question.grade()
+            
+    context = {
+        'course': course,
+        'grade':grade
+    }
+    
+    return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
+        

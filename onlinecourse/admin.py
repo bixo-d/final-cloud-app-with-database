@@ -20,24 +20,26 @@ class LessonInline(admin.StackedInline):
 
 # Register your models here.
 class CourseAdmin(admin.ModelAdmin):
-    inlines = [LessonInline]
+    inlines = [LessonInline, QuestionInline]
     list_display = ('name', 'pub_date')
     list_filter = ['pub_date']
     search_fields = ['name', 'description']
 
 
 class LessonAdmin(admin.ModelAdmin):
-    inlines = [QuestionInline]
     list_display = ['title']
 
 
 class QuestionAdmin(admin.ModelAdmin):
     inlines = [ChoiceInline]
-    list_display = ['question_text']
+    list_display = ['question_text', 'grade']
+    search_fields = ['question_text']
 
 
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ['choice_text']
+    list_display = ['choice_text', 'is_correct']
+    list_filter = ['choice_text']
+    search_fields = ['choice_text']
 
 
 # <HINT> Register Question and Choice models here
